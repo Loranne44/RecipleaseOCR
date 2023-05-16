@@ -18,6 +18,7 @@ final class CoreDataService {
         self.coreDataStack = coreDataStack
     }
     
+    
     // MARK: - Repository
     func getRecipes(callback: @escaping ([FavoriteRecipe]) -> Void) {
         // create request

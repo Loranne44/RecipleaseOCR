@@ -16,10 +16,14 @@ class SearchViewController: UIViewController, UITextFieldDelegate {
     
     // MARK: - Loaded View
     override func viewWillAppear(_ animated: Bool) {
+        nameIngredientTextField.delegate = self
+        nameIngredientTextField.returnKeyType = .done
+        
         toggleActivityIndicator(activityIndicator: activityIndicator, button: searchRecipesButton, showActivityIndicator: false)
         super.viewWillAppear(animated)
         tableView.reloadData()
     }
+    
     
     // MARK: - Outlets
     @IBOutlet weak var tableView: UITableView!
@@ -37,13 +41,10 @@ class SearchViewController: UIViewController, UITextFieldDelegate {
         else {
             return
         }
-        
         resultVC.recipleaseSearch = recipe
     }
     
-    // MARK: - Actions
-    @IBAction func buttonAddIngredients(_ sender: UIButton) {
-        
+    func insertNewIngredient() {
         guard let nameIngredient = nameIngredientTextField.text,
               !nameIngredient.isBlank
         else {
@@ -51,11 +52,15 @@ class SearchViewController: UIViewController, UITextFieldDelegate {
             messageAlert(message: ErrorCase.isEmpty.message, title: "Error")
             return
         }
-        
         ingredients.insert(nameIngredient)
         tableView.reloadData()
         nameIngredientTextField.text = ""
         nameIngredientTextField.resignFirstResponder()
+    }
+    
+    // MARK: - Actions
+    @IBAction func buttonAddIngredients(_ sender: UIButton) {
+        insertNewIngredient()
     }
     
     @IBAction func clearButton(_ sender: Any) {
@@ -81,15 +86,18 @@ class SearchViewController: UIViewController, UITextFieldDelegate {
                                 showActivityIndicator: true)
         
         RecipleaseService.shared.getRecipes(ingredients: Array(ingredients)) { [weak self] result in
-            DispatchQueue.main.async { [self] in
+            DispatchQueue.main.async {
+                guard let self = self else  {
+                    return
+                }
                 switch result {
                 case let .success(recipe) :
-                    self?.performSegue(withIdentifier: self!.segueIdentifier, sender: recipe)
+                    self.performSegue(withIdentifier: self.segueIdentifier, sender: recipe)
                 case let .failure(error):
-                    self?.messageAlert(message: "Error", title: "\(error)")
+                    self.messageAlert(message: "Error", title: "\(error)")
                 }
-                self?.toggleActivityIndicator(activityIndicator: self!.activityIndicator,
-                                              button: self!.searchRecipesButton,
+                self.toggleActivityIndicator(activityIndicator: self.activityIndicator,
+                                              button: self.searchRecipesButton,
                                               showActivityIndicator: false)
             }
         }
@@ -98,6 +106,11 @@ class SearchViewController: UIViewController, UITextFieldDelegate {
 
 // MARK: - Extension TableView
 extension SearchViewController: UITableViewDataSource {
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        insertNewIngredient()
+        return true
+    }
     
     func numberOfSections(in tableView: UITableView) -> Int {
         return 1

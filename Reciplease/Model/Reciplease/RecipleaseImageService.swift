@@ -17,14 +17,15 @@ class RecipleaseImageService {
         self.sessionImage = sessionImage
     }
     
-    func request(image: String?, object: UIImageView) {
-        guard let image, let url = URL(string: image) else {
-            object.image = UIImage(named: "pizza")
-            return
-        }
+    func request(imageUrl: String?, object: UIImageView) {
         guard let placeholderImage = UIImage(named: "pizza") else {
             return
         }
+        guard let imageUrl, let url = URL(string: imageUrl) else {
+            object.image = placeholderImage
+            return
+        }
+        
         sessionImage.setImage(url: url, placeholderImage: placeholderImage, object: object)
     }
 }

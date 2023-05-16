@@ -67,7 +67,7 @@ class DetailsRecipeViewController: UIViewController {
     
     /// Setup image
     private func setupImage() {
-        recipleaseImageService.request(image: recipleaseDisplay.image, object: imageRecipeView)
+        recipleaseImageService.request(imageUrl: recipleaseDisplay.image, object: imageRecipeView)
     }
     
     // MARK: - CoreData
@@ -100,8 +100,7 @@ class DetailsRecipeViewController: UIViewController {
                                     uri: uri,
                                     url: url,
                                     callback: { [weak self] in
-            self?.navigationController?.popViewController(animated: true)
-        })
+            self?.messageAlert(message: "The recipe has been added to your favorites", title: "Congrats !")        })
     }
     
     @IBAction func favoriteButton(_ sender: UIBarButtonItem) {
@@ -109,20 +108,20 @@ class DetailsRecipeViewController: UIViewController {
         // Recipe isn't in favorite recipe and add list
         if sender.image == UIImage(named: "empty-star") {
             sender.image = UIImage(named: "full-star")
-            messageAlert(message: "The recipe has been added to your favorites", title: "Congrats !")
             addRecipeToFavorites()
             
             // Recipe is in favorite recipe and delete list
         } else if sender.image == UIImage(named: "full-star") {
             sender.image = UIImage(named: "empty-star")
-            self.messageAlert(message: "The recipe has been removed from your favorites", title: "Congrats !")
+           
             guard let uri = recipleaseDisplay?.uri else {
-                return messageAlert(message: ErrorCase.noUri.message, title: "Error")
+                messageAlert(message: ErrorCase.noUri.message, title: "Error")
+                return
             }
             
             networkService?.unsaveRecipe(uri: uri,
                                          callback: { [weak self] in
-                self?.navigationController?.popViewController(animated: true)
+                self?.messageAlert(message: "The recipe has been removed from your favorites", title: "Congrats !")
                 
             })
         }

@@ -38,7 +38,7 @@ class RecipeTableViewCell: UITableViewCell {
             ingredientsLabel.text = recipe.ingredients[0].food
             yieldLabel.text = String(describing: recipe.yield ?? 0)
             timeLabel.text = ((recipe.totalTime ?? 0) * 60).convertTime(style: .abbreviated)
-            recipleaseImageSrvice.request(image: recipe.image, object: imageRecipeView)
+            recipleaseImageSrvice.request(imageUrl: recipe.image, object: imageRecipeView)
         }
     }
     
@@ -51,7 +51,7 @@ class RecipeTableViewCell: UITableViewCell {
             ingredientsLabel.text = "\(ingredient)"
             yieldLabel.text = String(describing: favoriteRecipe?.yield ?? 0)
             timeLabel.text = ((favoriteRecipe?.totalTime ?? 0) * 60).convertTime(style: .abbreviated)
-            recipleaseImageSrvice.request(image: favoriteRecipe?.image, object: imageRecipeView)
+            recipleaseImageSrvice.request(imageUrl: favoriteRecipe?.image, object: imageRecipeView)
         }
     }
 }

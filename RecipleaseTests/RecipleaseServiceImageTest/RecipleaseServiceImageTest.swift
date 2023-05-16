@@ -9,60 +9,33 @@ import XCTest
 
 final class RecipleaseServiceImageTest: XCTestCase {
     
-    /*
-     func testBlablaisSuccess() {
-         let myImage = UIImage(named: "pizza")!
-         let mockProvider = RecipleaseImageMockProvider(result: .success(myImage))
-         let placeholderImage = UIImage()
-         let recipleaseService = RecipleaseImageService(sessionImage: mockProvider)
-         let imageView = UIImageView()
-         
-         recipleaseService.sessionImage.setImage(url: URL(string: "fakeURl")!, placeholderImage: placeholderImage, object: imageView)
-         XCTAssertEqual(imageView.image, myImage)
-     }
-     
-     func testBlablaIsFailure() {
-         let mockProvider = RecipleaseImageMockProvider(result: .failure(ErrorCase.errorDecode))
-         
-         let placeholderImage = UIImage()
-         
-         let recipleaseService = RecipleaseImageService(sessionImage: mockProvider)
-         
-         let imageView = UIImageView()
-         
-        recipleaseService.sessionImage.setImage(url: URL(string: "fakeURl")!, placeholderImage: placeholderImage, object: imageView)
-         
-         XCTAssertEqual(imageView.image, placeholderImage)
-     }
-     */
-
-    func testIsFailure() {
+    func TestFailedImageDownloadPlaceholderDownload() {
         let mockProvider = RecipleaseImageMockProvider(result: .failure(ErrorCase.errorDecode))
         
-        let imageTest = "https://www.ptitchef.com/recettes/dessert/gateau-au-chocolat-tout-simple-fid-1566045"
+        let imageUrl = "https://www.ptitchef.com/recettes/dessert/gateau-au-chocolat-tout-simple-fid-1566045"
         
         let recipleaseService = RecipleaseImageService(sessionImage: mockProvider)
         
         let imageView = UIImageView()
+        // imageUrl et non image
+        recipleaseService.request(imageUrl: imageUrl, object: imageView)
         
-        recipleaseService.request(image: imageTest, object: imageView)
-    
         XCTAssertEqual(imageView.image, UIImage(named: "pizza"))
     }
     
     
     func testIsSuccess() {
-        let myImage = UIImage(named: "pizza")!
+        let myImage = UIImage(systemName: "hand.thumbsup")!
         
-        let imageTest = "https://www.ptitchef.com/recettes/dessert/gateau-au-chocolat-tout-simple-fid-1566045"
+        let imageUrl = "https://www.ptitchef.com/recettes/dessert/gateau-au-chocolat-tout-simple-fid-1566045"
         
         let mockProvider = RecipleaseImageMockProvider(result: .success(myImage))
-
+        
         let recipleaseService = RecipleaseImageService(sessionImage: mockProvider)
         let imageView = UIImageView()
         
-        recipleaseService.request(image: imageTest, object: imageView)
-    
+        recipleaseService.request(imageUrl: imageUrl, object: imageView)
+        
         XCTAssertEqual(imageView.image, myImage)
     }
 }
